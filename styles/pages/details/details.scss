@@ -1,34 +1,36 @@
 .detail {
   @extend %cover;
   @extend %center;
-  background-color: $color-quicksand;
-  color: $color-white;
+
+  background: $color-quicksand;
+  color: $color-quarter-spanish-white;
 
   @include media("<phone") {
     height: auto;
   }
 }
+
 .detail__wrapper {
-  display: flex;
   align-items: center;
+  display: flex;
 
   @include media("<phone") {
     display: block;
     margin: auto;
-    padding: 16rem 0;
+    padding: 15rem 0 31.5rem;
     width: 66.1rem;
   }
 }
 
 .detail__media {
-  width: 55.4rem;
   height: 78.2rem;
   position: relative;
+  width: 55.4rem;
 
   @include media("<phone") {
-    width: 100%;
     height: 93.4rem;
     margin: 0 auto 7.8rem;
+    width: 100%;
   }
 }
 
@@ -48,7 +50,9 @@
 
 .detail__information__collection {
   @extend %description-12;
+
   margin-bottom: 4rem;
+  overflow: hidden;
   text-transform: uppercase;
 }
 
@@ -65,8 +69,9 @@
     padding-left: 0;
   }
 }
+
 .detail__information__highlights {
-  margin-top: 5rem;
+  margin-top: 6rem;
 }
 
 .detail__information__highlight {
@@ -79,16 +84,15 @@
 }
 
 .detail__information__highlight__icon {
-  border: 1px solid #e6e6e6;
   border-radius: 50%;
   height: 4rem;
-  width: 4rem;
   margin-right: 3.75rem;
+  width: 4rem;
 
   @include media("<phone") {
     height: 9.2rem;
-    width: 9.2rem;
     margin-right: 5.8rem;
+    width: 9.2rem;
   }
 }
 
@@ -110,12 +114,13 @@
 
 .detail__information__item__title {
   @extend %description-12;
+
   padding-right: 2.5rem;
   width: 10rem;
 
   @include media("<phone") {
-    width: 15rem;
     padding-right: 5rem;
+    width: 15rem;
   }
 }
 
@@ -127,30 +132,34 @@
 }
 
 .detail__information__link {
-  margin-top: 3rem;
-  display: inline-block;
-
   @extend %title-30;
+
+  display: inline-block;
+  margin-top: 3rem;
+
+  @include media("<phone") {
+  }
 }
 
 .detail__button {
   @extend %description-14;
 
-  width: 12.4rem;
-  height: 6rem;
-  display: flex;
-  justify-content: center;
   align-items: center;
-  left: 50%;
   bottom: 5rem;
+  display: flex;
+  height: 6rem;
+  justify-content: center;
+  left: 50%;
   position: absolute;
+  text-transform: uppercase;
   transform: translateX(-50%);
+  width: 12.4rem;
   z-index: 2;
 
   @include media("<phone") {
+    bottom: 12rem;
+    height: 13rem;
     width: 26.8rem;
-    height: 26.8rem;
-    bottom: 0;
   }
 }
 
