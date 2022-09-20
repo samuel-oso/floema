@@ -1,5 +1,7 @@
 import each from "lodash/each";
 
+import Preloader from "components/Preloader";
+
 import About from "pages/About";
 import Collections from "pages/Collections";
 import Home from "pages/Home";
@@ -7,9 +9,15 @@ import Detail from "pages/Detail";
 
 class App {
   constructor() {
+    this.createPreloader();
     this.createContent();
     this.createPages();
     this.addLinkListeners();
+  }
+
+  createPreloader() {
+    this.preloader = new Preloader();
+    this.preloader.once("completed", this.onPreloaded.bind(this));
   }
 
   createContent() {
@@ -27,6 +35,11 @@ class App {
 
     this.page = this.pages[this.template];
     this.page.create();
+  }
+
+  onPreloaded() {
+    this.preloader.destroy();
+
     this.page.show();
   }
 
@@ -49,6 +62,8 @@ class App {
       this.page = this.pages[this.template];
       this.page.create();
       this.page.show();
+
+      this.addLinkListeners();
     } else {
       console.error(`response status: ${res.status}`);
     }
