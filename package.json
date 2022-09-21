@@ -40,6 +40,7 @@
     "node-fetch": "^2.6.7",
     "nodemon": "^2.0.19",
     "postcss-loader": "^7.0.1",
+    "prefix": "^1.0.0",
     "sass": "^1.54.5",
     "sass-loader": "^13.0.2",
     "terser-webpack-plugin": "^5.3.6",
