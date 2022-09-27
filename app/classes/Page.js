@@ -11,6 +11,9 @@ import Paragraph from "animations/Paragraph";
 import Label from "animations/Label";
 import Highlight from "animations/Highlight";
 
+import AsyncLoad from "classes/AsyncLoad";
+import { ColorsManager } from "classes/Colors";
+
 export default class Page {
   constructor({ element, elements, id }) {
     this.selector = element;
@@ -20,6 +23,8 @@ export default class Page {
       animationsLabels: '[data-animation="label"]',
       animationsParagraphs: '[data-animation="paragraph"]',
       animationsTitles: '[data-animation="title"]',
+
+      preloaders: "[data-src]",
     };
 
     this.id = id;
@@ -59,6 +64,7 @@ export default class Page {
     });
 
     this.createAnimations();
+    this.createPreloader();
   }
 
   createAnimations() {
@@ -111,8 +117,19 @@ export default class Page {
     this.animations.push(...this.animationsHighlights);
   }
 
+  createPreloader() {
+    this.preloaders = map(this.elements.preloaders, (element) => {
+      return new AsyncLoad({ element });
+    });
+  }
+
+  // Animations
   show() {
     return new Promise((resolve) => {
+      ColorsManager.change({
+        backgroundColor: this.element.getAttribute("data-background"),
+        color: this.element.getAttribute("data-color"),
+      });
       this.animationIn = GSAP.timeline();
 
       this.animationIn.fromTo(
@@ -124,10 +141,8 @@ export default class Page {
           autoAlpha: 1,
         }
       );
-
       this.animationIn.call((_) => {
         this.addEventListeners();
-
         resolve();
       });
     });
@@ -135,7 +150,7 @@ export default class Page {
 
   hide() {
     return new Promise((resolve) => {
-      this.removeEventListeners();
+      this.destroy();
 
       this.animationIn = GSAP.timeline();
 
@@ -146,6 +161,7 @@ export default class Page {
     });
   }
 
+  // Events
   onMouseWheel(event) {
     const { pixelY } = NormalizeWheel(event);
 
@@ -161,6 +177,7 @@ export default class Page {
     each(this.animations, (animation) => animation.onResize());
   }
 
+  // Loops
   update() {
     this.scroll.target = GSAP.utils.clamp(
       0,
@@ -185,11 +202,17 @@ export default class Page {
     }
   }
 
+  // Listeners
   addEventListeners() {
     window.addEventListener("mousewheel", this.onMouseWheelEvent);
   }
 
   removeEventListeners() {
     window.removeEventListener("mousewheel", this.onMouseWheelEvent);
+  }
+
+  // Destroy
+  destroy() {
+    this.removeEventListener();
   }
 }

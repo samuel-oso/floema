@@ -34,7 +34,7 @@ export default class Preloader extends Component {
     this.length = 0;
 
     // Always console.log this line after writing this first bulk of code to be sure of what it is rendering
-    console.log(this.element, this.elements);
+    // console.log(this.element, this.elements);
 
     this.createLoader();
   }
