@@ -1,14 +1,25 @@
 import GSAP from "gsap";
-
 import Prefix from "prefix";
 
+import NormalizeWheel from "normalize-wheel";
+
 import each from "lodash/each";
+import map from "lodash/map";
+
+import Title from "animations/Title";
+import Paragraph from "animations/Paragraph";
+import Label from "animations/Label";
+import Highlight from "animations/Highlight";
 
 export default class Page {
   constructor({ element, elements, id }) {
     this.selector = element;
     this.selectorChildren = {
       ...elements,
+      animationsHighlights: '[data-animation="highlight"]',
+      animationsLabels: '[data-animation="label"]',
+      animationsParagraphs: '[data-animation="paragraph"]',
+      animationsTitles: '[data-animation="title"]',
     };
 
     this.id = id;
@@ -29,7 +40,7 @@ export default class Page {
       limit: 0,
     };
 
-    each(this.selectorChildren, (entry, key) => {
+    map(this.selectorChildren, (entry, key) => {
       if (
         entry instanceof window.HTMLElement ||
         entry instanceof window.NodeList ||
@@ -46,6 +57,58 @@ export default class Page {
         }
       }
     });
+
+    this.createAnimations();
+  }
+
+  createAnimations() {
+    this.animations = [];
+
+    // Titles
+
+    this.animationsTitles = map(this.elements.animationsTitles, (element) => {
+      return new Title({
+        element,
+      });
+    });
+
+    this.animations.push(...this.animationsTitles);
+
+    // Paragraphs
+
+    this.animationsParagraphs = map(
+      this.elements.animationsParagraphs,
+      (element) => {
+        return new Paragraph({
+          element,
+        });
+      }
+    );
+
+    this.animations.push(...this.animationsParagraphs);
+
+    // Labels
+
+    this.animationsLabels = map(this.elements.animationsLabels, (element) => {
+      return new Label({
+        element,
+      });
+    });
+
+    this.animations.push(...this.animationsLabels);
+
+    // Highlights
+
+    this.animationsHighlights = map(
+      this.elements.animationsHighlights,
+      (element) => {
+        return new Highlight({
+          element,
+        });
+      }
+    );
+
+    this.animations.push(...this.animationsHighlights);
   }
 
   show() {
@@ -84,9 +147,9 @@ export default class Page {
   }
 
   onMouseWheel(event) {
-    const { deltaY } = event;
+    const { pixelY } = NormalizeWheel(event);
 
-    this.scroll.target += deltaY;
+    this.scroll.target += pixelY;
   }
 
   onResize() {
@@ -94,6 +157,8 @@ export default class Page {
       this.scroll.limit =
         this.elements.wrapper.clientHeight - window.innerHeight;
     }
+
+    each(this.animations, (animation) => animation.onResize());
   }
 
   update() {
