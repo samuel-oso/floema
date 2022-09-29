@@ -1,7 +1,7 @@
 import GSAP from "gsap";
-import Prefix from "prefix";
-
 import NormalizeWheel from "normalize-wheel";
+
+import Prefix from "prefix";
 
 import each from "lodash/each";
 import map from "lodash/map";
@@ -12,6 +12,7 @@ import Label from "animations/Label";
 import Highlight from "animations/Highlight";
 
 import AsyncLoad from "classes/AsyncLoad";
+
 import { ColorsManager } from "classes/Colors";
 
 export default class Page {
@@ -19,33 +20,29 @@ export default class Page {
     this.selector = element;
     this.selectorChildren = {
       ...elements,
-      animationsHighlights: '[data-animation="highlight"]',
-      animationsLabels: '[data-animation="label"]',
-      animationsParagraphs: '[data-animation="paragraph"]',
+
+      aimationsHighlights: '[data-animation="highlight"]',
       animationsTitles: '[data-animation="title"]',
+      animationsParagraphs: '[data-animation="paragraph"]',
+      animationsLabels: '[data-animation="label"]',
 
       preloaders: "[data-src]",
     };
 
     this.id = id;
-
     this.transformPrefix = Prefix("transform");
-
     this.onMouseWheelEvent = this.onMouseWheel.bind(this);
   }
-
   create() {
     this.element = document.querySelector(this.selector);
     this.elements = {};
-
     this.scroll = {
       current: 0,
       target: 0,
       last: 0,
       limit: 0,
     };
-
-    map(this.selectorChildren, (entry, key) => {
+    each(this.selectorChildren, (entry, key) => {
       if (
         entry instanceof window.HTMLElement ||
         entry instanceof window.NodeList ||
@@ -54,7 +51,6 @@ export default class Page {
         this.elements[key] = entry;
       } else {
         this.elements[key] = document.querySelectorAll(entry);
-
         if (this.elements[key].length === 0) {
           this.elements[key] = null;
         } else if (this.elements[key].length === 1) {
@@ -64,8 +60,17 @@ export default class Page {
     });
 
     this.createAnimations();
+
     this.createPreloader();
   }
+
+  createPreloader() {
+    this.preloaders = map(this.elements.preloaders, (element) => {
+      return new AsyncLoad({ element });
+    });
+  }
+
+  // Animations
 
   createAnimations() {
     this.animations = [];
@@ -105,8 +110,8 @@ export default class Page {
 
     // Highlights
 
-    this.animationsHighlights = map(
-      this.elements.animationsHighlights,
+    this.aimationsHighlights = map(
+      this.elements.aimationsHighlights,
       (element) => {
         return new Highlight({
           element,
@@ -114,16 +119,9 @@ export default class Page {
       }
     );
 
-    this.animations.push(...this.animationsHighlights);
+    this.animations.push(...this.aimationsHighlights);
   }
 
-  createPreloader() {
-    this.preloaders = map(this.elements.preloaders, (element) => {
-      return new AsyncLoad({ element });
-    });
-  }
-
-  // Animations
   show() {
     return new Promise((resolve) => {
       ColorsManager.change({
@@ -162,9 +160,9 @@ export default class Page {
   }
 
   // Events
-  onMouseWheel(event) {
-    const { pixelY } = NormalizeWheel(event);
 
+  onMouseWheel(e) {
+    const { pixelY } = NormalizeWheel(e);
     this.scroll.target += pixelY;
   }
 
@@ -177,24 +175,22 @@ export default class Page {
     each(this.animations, (animation) => animation.onResize());
   }
 
-  // Loops
+  // Loop
+
   update() {
     this.scroll.target = GSAP.utils.clamp(
       0,
       this.scroll.limit,
       this.scroll.target
     );
-
     this.scroll.current = GSAP.utils.interpolate(
       this.scroll.current,
       this.scroll.target,
       0.1
     );
-
     if (this.scroll.current < 0.01) {
       this.scroll.current = 0;
     }
-
     if (this.elements.wrapper) {
       this.elements.wrapper.style[
         this.transformPrefix
@@ -203,6 +199,7 @@ export default class Page {
   }
 
   // Listeners
+
   addEventListeners() {
     window.addEventListener("mousewheel", this.onMouseWheelEvent);
   }
@@ -212,7 +209,8 @@ export default class Page {
   }
 
   // Destroy
+
   destroy() {
-    this.removeEventListener();
+    this.removeEventListeners();
   }
 }
