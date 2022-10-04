@@ -1,5 +1,7 @@
 /*! ./Media */
 
+/*! gsap */
+
 /*! lodash/map */
 
 /*! ogl */

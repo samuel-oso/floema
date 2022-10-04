@@ -1,4 +1,6 @@
 import { Mesh, Program, Texture } from "ogl";
+import GSAP from "gsap";
+
 import vertex from "../../shaders/plane-vertex.glsl";
 import fragment from "../../shaders/plane-fragment.glsl";
 
@@ -14,6 +16,11 @@ export default class Media {
     this.createTexture();
     this.createProgram();
     this.createMesh();
+
+    this.extra = {
+      x: 0,
+      y: 0,
+    };
   }
   createTexture() {
     this.texture = new Texture(this.gl);
@@ -71,13 +78,13 @@ export default class Media {
   updateX(x = 0) {
     this.x = (this.bounds.left + x) / window.innerWidth;
 
-    this.mesh.position.x = (-this.sizes.width / 2) + (this.mesh.scale.x / 2) + (this.x  * this.sizes.width); // prettier-ignore
+    this.mesh.position.x = (-this.sizes.width / 2) + (this.mesh.scale.x / 2) + (this.x  * this.sizes.width) + this.extra.x; // prettier-ignore
   }
 
   updateY(y = 0) {
     this.y = (this.bounds.top + y) / window.innerHeight;
 
-    this.mesh.position.y = (this.sizes.height / 2) - (this.mesh.scale.y / 2) - (this.y  * this.sizes.height); // prettier-ignore
+    this.mesh.position.y = (this.sizes.height / 2) - (this.mesh.scale.y / 2) - (this.y  * this.sizes.height) + this.extra.y; // prettier-ignore
   }
 
   update(scroll) {
